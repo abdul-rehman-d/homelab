@@ -19,7 +19,7 @@ qbit.smallboi.local {
 # }
 
 # prowlarr.smallboi.local {
-     reverse_proxy 192.168.100.28:9696
+#     reverse_proxy 192.168.100.28:9696
 # }
 
 portainer.smallboi.local {
