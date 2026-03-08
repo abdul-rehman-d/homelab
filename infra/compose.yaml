@@ -20,3 +20,4 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - /srv/caddy/data:/data
       - /srv/caddy/config:/config
+      - ../site:/site
