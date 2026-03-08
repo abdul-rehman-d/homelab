@@ -8,3 +8,15 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /srv/portainer/data:/data
+
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - /srv/caddy/data:/data
+      - /srv/caddy/config:/config

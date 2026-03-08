@@ -1,0 +1,27 @@
+admin.smallboi.local {
+    reverse_proxy 192.168.100.28:9090
+}
+
+jellyfin.smallboi.local {
+    reverse_proxy 192.168.100.28:8096
+}
+
+qbit.smallboi.local {
+    reverse_proxy 192.168.100.28:8080
+}
+
+# sonarr.smallboi.local {
+#     reverse_proxy 192.168.100.28:8989
+# }
+
+# radarr.smallboi.local {
+#     reverse_proxy 192.168.100.28:7878
+# }
+
+# prowlarr.smallboi.local {
+     reverse_proxy 192.168.100.28:9696
+# }
+
+portainer.smallboi.local {
+    reverse_proxy 192.168.100.28:9000
+}
