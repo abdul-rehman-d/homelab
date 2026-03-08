@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cd infra
+docker compose up -d
+cd ..
+
+cd media
+docker compose up -d
+cd ..
