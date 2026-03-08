@@ -5,16 +5,17 @@ smallboi.local {
 	handle_path /admin* {
 		reverse_proxy 192.168.100.28:9090
 	}
+
 	handle_path /jellyfin* {
-		reverse_proxy jellyfin:8096
+		reverse_proxy 192.168.100.28:8096
 	}
 
 	handle_path /qbit* {
-		reverse_proxy qbittorrent:8080
+		reverse_proxy 192.168.100.28:8080
 	}
 
 	handle_path /portainer* {
-		reverse_proxy portainer:9000
+		reverse_proxy 192.168.100.28:9000
 	}
 
 	# handle_path /sonarr* {
