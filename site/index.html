@@ -73,5 +73,14 @@
 		<li><a href="http://192.168.100.28:4000">qBittorrent</a></li>
 		<li><a href="http://192.168.100.28:8080">Project Nomad</a></li>
 	</ul>
+	<script>
+		const anchors = document.querySelectorAll("a");
+		anchors.forEach(a => {
+			const port = new URL(a.href).port;
+			const url = new URL(window.location.href);
+			url.port = port;
+			a.href = url.toString();
+		})
+	</script>
 </body>
 </html>
