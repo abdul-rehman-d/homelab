@@ -5,10 +5,11 @@ for now, just docker composes for my homelab (old laptop converting server)
 ## Todos
 - [ ] figure out caddy
 - [ ] vpn instead of cloudfare tunnel?
-- [ ] TUI app as a dashboard
+- [x] TUI app as a dashboard (sorta done @ [abdul-rehman-d/cockpit](https://github.com/abdul-rehman-d/cockpit))
 
-## Aaaahhh
-<img width="800" height="450" alt="image" src="https://github.com/user-attachments/assets/a01b7584-5492-42b5-86ce-0a4731ac9b3d" />
+## How it looks
+![IMG_0418(1)](https://github.com/user-attachments/assets/a037afcd-e9d8-464a-a73c-2c27526b6f80)
+
 
 ## Apps
 
