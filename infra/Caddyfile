@@ -1,33 +1,5 @@
-smallboi.local {
+:80 {
 	root * /site
 	file_server
-
-	handle_path /admin* {
-		reverse_proxy 192.168.100.28:9090
-	}
-
-	handle_path /jellyfin* {
-		reverse_proxy 192.168.100.28:8096
-	}
-
-	handle_path /qbit* {
-		reverse_proxy 192.168.100.28:8080
-	}
-
-	handle_path /portainer* {
-		reverse_proxy 192.168.100.28:9000
-	}
-
-	# handle_path /sonarr* {
-	# 	reverse_proxy 192.168.100.28:8989
-	# }
-
-	# handle_path /radarr* {
-	# 	reverse_proxy 192.168.100.28:7878
-	# }
-
-	# handle_path /prowlarr* {
-	# 	reverse_proxy 192.168.100.28:9696
-	# }
 }
 
