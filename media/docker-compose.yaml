@@ -28,7 +28,6 @@ services:
     volumes:
       - /srv/qbittorrent/config:/config
       - /srv/storage/torrents:/torrents
-      - /srv/storage/media:/media
 
 #   sonarr:
 #     image: lscr.io/linuxserver/sonarr:latest
