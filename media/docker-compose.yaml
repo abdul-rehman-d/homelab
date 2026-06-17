@@ -30,6 +30,26 @@ services:
       - /srv/storage/torrents:/torrents
       - /srv/storage/media:/media
 
+  torrentlab:
+    image: ghcr.io/abdul-rehman-d/torrent-lab:latest
+    container_name: torrentlab
+    environment:
+      CONFIG_DIR: /config
+      MOVIES_PATH: /media/movies
+      TV_PATH: /media/tv
+      INCOMPLETE_PATH: /torrents/incomplete
+      DOWNLOADS_PATH: /torrents/downloads
+      PORT: 5000
+    ports:
+      - "5000:5000"
+    volumes:
+      - /srv/torrentlab/config:/config
+      - /srv/storage/torrents:/torrents
+      - /srv/storage/media:/media
+    depends_on:
+      - qbittorrent
+    restart: unless-stopped
+
 #   sonarr:
 #     image: lscr.io/linuxserver/sonarr:latest
 #     container_name: sonarr
