@@ -10,7 +10,8 @@ services:
     volumes:
       - /srv/jellyfin/config:/config
       - /srv/jellyfin/cache:/cache
-      - /srv/storage/media:/media
+      - /srv/storage/media/tv:/media/tv
+      - /srv/internalstorage/media/movies:/media/movies
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
@@ -28,7 +29,8 @@ services:
     volumes:
       - /srv/qbittorrent/config:/config
       - /srv/storage/torrents:/torrents
-      - /srv/storage/media:/media
+      - /srv/storage/media/tv:/media/tv
+      - /srv/internalstorage/media/movies:/media/movies
 
   torrentlab:
     image: ghcr.io/abdul-rehman-d/torrent-lab:latest
@@ -45,7 +47,8 @@ services:
     volumes:
       - /srv/torrentlab/config:/config
       - /srv/storage/torrents:/torrents
-      - /srv/storage/media:/media
+      - /srv/storage/media/tv:/media/tv
+      - /srv/internalstorage/media/movies:/media/movies
     depends_on:
       - qbittorrent
     restart: unless-stopped
