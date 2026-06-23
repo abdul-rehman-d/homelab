@@ -36,6 +36,8 @@ services:
     image: ghcr.io/abdul-rehman-d/torrent-lab:latest
     container_name: torrentlab
     environment:
+      PUID: 1000
+      PGID: 1000
       CONFIG_DIR: /config
       MOVIES_PATH: /media/movies
       TV_PATH: /media/tv
