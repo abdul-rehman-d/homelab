@@ -24,6 +24,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
+      - UMASK=002
       - TZ=Asia/Karachi
       - WEBUI_PORT=4000
     volumes:
@@ -38,6 +39,7 @@ services:
     environment:
       PUID: 1000
       PGID: 1000
+      UMASK: "002"
       CONFIG_DIR: /config
       MOVIES_PATH: /media/movies
       TV_PATH: /media/tv
