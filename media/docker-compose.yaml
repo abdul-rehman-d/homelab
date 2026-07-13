@@ -10,8 +10,9 @@ services:
     volumes:
       - /srv/jellyfin/config:/config
       - /srv/jellyfin/cache:/cache
-      - /srv/storage/media/tv:/media/tv
-      - /srv/internalstorage/media/movies:/media/movies
+      # - /srv/nutshell/media/tv:/media/tv
+      # - /srv/nutshell/media/movies:/media/movies
+      - /srv/nutshell/media:/media
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
@@ -29,9 +30,8 @@ services:
       - WEBUI_PORT=4000
     volumes:
       - /srv/qbittorrent/config:/config
-      - /srv/storage/torrents:/torrents
-      - /srv/storage/media/tv:/media/tv
-      - /srv/internalstorage/media/movies:/media/movies
+      - /srv/nutshell/torrents:/torrents
+      - /srv/nutshell/media:/media
 
   torrentlab:
     image: ghcr.io/abdul-rehman-d/torrent-lab:latest
@@ -50,9 +50,8 @@ services:
       - "5000:5000"
     volumes:
       - /srv/torrentlab/config:/config
-      - /srv/storage/torrents:/torrents
-      - /srv/storage/media/tv:/media/tv
-      - /srv/internalstorage/media/movies:/media/movies
+      - /srv/nutshell/torrents:/torrents
+      - /srv/nutshell/media:/media
     depends_on:
       - qbittorrent
     restart: unless-stopped
