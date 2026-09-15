@@ -7,3 +7,7 @@ cd ..
 cd media
 docker compose up -d
 cd ..
+
+cd tools
+docker compose up -d
+cd ..

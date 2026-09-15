@@ -27,3 +27,9 @@ for now, just docker composes for my homelab (old laptop converting server)
 
 ### cockpit
 <img width="800" height="450" alt="image" src="https://github.com/user-attachments/assets/92114f35-f5c7-4bf4-80e4-f9a42bbe4800" />
+
+### Stirling PDF
+
+Stirling PDF is available on port `6000`. Its persistent data lives under
+`/srv/stirling-pdf`. The initial login is `admin` / `stirling`; the app requires
+the password to be changed on first login.
