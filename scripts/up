@@ -6,6 +6,9 @@ cd ..
 
 cd media
 docker compose up -d
+# weird edge case
+sleep 1
+docker restart torrentlab
 cd ..
 
 cd tools
