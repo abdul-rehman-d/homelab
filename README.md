@@ -44,7 +44,6 @@ numbers:
 - `http://portainer.smallboi` — Portainer
 - `http://jellyfin.smallboi` — Jellyfin
 - `http://qbit.smallboi` — qBittorrent
-- `http://nomad.smallboi` — Project Nomad
 - `http://torrentlab.smallboi` — Torrent Lab
 - `http://pdf.smallboi` — Stirling PDF
 

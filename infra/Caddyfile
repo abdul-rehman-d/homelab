@@ -23,11 +23,6 @@
 		reverse_proxy qbittorrent:4000
 	}
 
-	@nomad host nomad.smallboi
-	handle @nomad {
-		reverse_proxy host.docker.internal:8080
-	}
-
 	@torrentlab host torrentlab.smallboi
 	handle @torrentlab {
 		reverse_proxy torrentlab:5000
