@@ -33,3 +33,27 @@ for now, just docker composes for my homelab (old laptop converting server)
 Stirling PDF is available on port `6000`. Its persistent data lives under
 `/srv/stirling-pdf`. The initial login is `admin` / `stirling`; the app requires
 the password to be changed on first login.
+
+## Private service names
+
+When connected to the tailnet, the services are also available without port
+numbers:
+
+- `http://smallboi` — dashboard
+- `http://cockpit.smallboi` — Cockpit
+- `http://portainer.smallboi` — Portainer
+- `http://jellyfin.smallboi` — Jellyfin
+- `http://qbit.smallboi` — qBittorrent
+- `http://nomad.smallboi` — Project Nomad
+- `http://torrentlab.smallboi` — Torrent Lab
+- `http://pdf.smallboi` — Stirling PDF
+
+CoreDNS answers the `*.smallboi` records on the server's Tailscale address,
+`100.119.155.32`. The tailnet must have a restricted nameserver for the
+`smallboi` domain pointing to that address. All original published ports remain
+available. The DNS wildcard means future one-level names only need a matching
+Caddy route; CoreDNS does not need another record.
+
+If qBittorrent rejects the proxied hostname, add `qbit.smallboi` under
+**Settings → Web UI → Server domains** while leaving its CSRF and clickjacking
+protections enabled.

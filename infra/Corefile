@@ -1,0 +1,12 @@
+smallboi:53 {
+	bind 100.119.155.32
+	errors
+	cache 300
+	reload
+
+	hosts {
+		100.119.155.32 *.smallboi
+		ttl 300
+		no_reverse
+	}
+}

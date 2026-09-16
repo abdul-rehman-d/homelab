@@ -8,6 +8,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /srv/portainer/data:/data
+    networks:
+      - homelab-proxy
 
   caddy:
     image: caddy:latest
@@ -17,7 +19,37 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - /srv/caddy/data:/data
       - /srv/caddy/config:/config
-      - ../site:/site
+      - ../site:/site:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - homelab-proxy
+
+  coredns:
+    image: coredns/coredns:1.14.7
+    container_name: coredns
+    restart: unless-stopped
+    network_mode: host
+    command: -conf /etc/coredns/Corefile
+    volumes:
+      - ./Corefile:/etc/coredns/Corefile:ro
+    user: "0:0"
+    read_only: true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    mem_limit: 64m
+    cpus: "0.25"
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: "2"
+
+networks:
+  homelab-proxy:
+    external: true

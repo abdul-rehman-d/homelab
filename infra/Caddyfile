@@ -1,5 +1,45 @@
 :80 {
-	root * /site
-	file_server
-}
+	@cockpit host cockpit.smallboi
+	handle @cockpit {
+		reverse_proxy https://host.docker.internal:9090 {
+			transport http {
+				tls_insecure_skip_verify
+			}
+		}
+	}
 
+	@portainer host portainer.smallboi
+	handle @portainer {
+		reverse_proxy portainer:9000
+	}
+
+	@jellyfin host jellyfin.smallboi
+	handle @jellyfin {
+		reverse_proxy jellyfin:8096
+	}
+
+	@qbit host qbit.smallboi
+	handle @qbit {
+		reverse_proxy qbittorrent:4000
+	}
+
+	@nomad host nomad.smallboi
+	handle @nomad {
+		reverse_proxy host.docker.internal:8080
+	}
+
+	@torrentlab host torrentlab.smallboi
+	handle @torrentlab {
+		reverse_proxy torrentlab:5000
+	}
+
+	@pdf host pdf.smallboi
+	handle @pdf {
+		reverse_proxy stirling-pdf:8080
+	}
+
+	handle {
+		root * /site
+		file_server
+	}
+}

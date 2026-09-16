@@ -1,16 +1,16 @@
 #!/bin/bash
 
-cd infra
-docker compose up -d
-cd ..
+set -euo pipefail
 
-cd media
-docker compose up -d
+REPO_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_DIR"
+
+docker network inspect homelab-proxy >/dev/null 2>&1 || \
+	docker network create homelab-proxy
+
+docker compose -f infra/compose.yaml up -d
+docker compose -f media/docker-compose.yaml up -d
 # weird edge case
 sleep 1
 docker restart torrentlab
-cd ..
-
-cd tools
-docker compose up -d
-cd ..
+docker compose -f tools/compose.yaml up -d

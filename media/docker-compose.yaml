@@ -13,6 +13,8 @@ services:
       # - /srv/nutshell/media/tv:/media/tv
       # - /srv/nutshell/media/movies:/media/movies
       - /srv/nutshell/media:/media
+    networks:
+      - homelab-proxy
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
@@ -32,6 +34,8 @@ services:
       - /srv/qbittorrent/config:/config
       - /srv/nutshell/torrents:/torrents
       - /srv/nutshell/media:/media
+    networks:
+      - homelab-proxy
 
   torrentlab:
     image: ghcr.io/abdul-rehman-d/torrent-lab:latest
@@ -55,4 +59,9 @@ services:
     depends_on:
       - qbittorrent
     restart: unless-stopped
+    networks:
+      - homelab-proxy
 
+networks:
+  homelab-proxy:
+    external: true
