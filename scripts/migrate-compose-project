@@ -11,9 +11,9 @@ if [[ ! -f .env ]]; then
 fi
 
 printf 'Stopping the legacy infra, media and tools Compose projects...\n'
-docker compose -p infra -f infra/compose.yaml down --remove-orphans
-docker compose -p media -f media/docker-compose.yaml down --remove-orphans
-docker compose -p tools -f tools/compose.yaml down --remove-orphans
+docker compose --env-file "$REPO_DIR/.env" -p infra -f infra/compose.yaml down --remove-orphans
+docker compose --env-file "$REPO_DIR/.env" -p media -f media/docker-compose.yaml down --remove-orphans
+docker compose --env-file "$REPO_DIR/.env" -p tools -f tools/compose.yaml down --remove-orphans
 
 printf 'Removing any remaining containers from the legacy project layout...\n'
 for container in caddy coredns portainer jellyfin qbittorrent torrentlab stirling-pdf; do
@@ -29,5 +29,5 @@ if docker network inspect homelab-proxy >/dev/null 2>&1; then
 fi
 
 printf 'Starting the unified homelab Compose project...\n'
-docker compose up -d --remove-orphans
+docker compose --env-file "$REPO_DIR/.env" up -d --remove-orphans
 "$REPO_DIR/scripts/tailscale-services-up"

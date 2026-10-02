@@ -15,5 +15,5 @@ if docker container inspect caddy >/dev/null 2>&1 || docker container inspect co
 	exit 1
 fi
 
-docker compose up -d --remove-orphans
+docker compose --env-file "$REPO_DIR/.env" up -d --remove-orphans
 "$REPO_DIR/scripts/tailscale-services-up"
