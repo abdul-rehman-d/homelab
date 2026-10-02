@@ -42,9 +42,14 @@ The migration removes and recreates this repository's named containers and
 deletes the obsolete `homelab-proxy` network. It does not remove the bind
 mounted application data under `/srv`.
 
-After the containers start, open the Tailscale admin console and approve the
-pending hosts for `home`, `pdf`, `qbit`, `torrent`, `jellyfin`, `portainer` and
-`cockpit`. HTTPS must be enabled under the tailnet DNS settings.
+Before Tailscale Services can be advertised, define `tag:homelab` under
+**Access controls → Tags** and assign it to `smallboi` under **Machines → Edit
+tags**. A Service host must be tagged; tagging replaces the machine's
+user-based Tailscale identity. Keep a LAN SSH session available while making
+this change. Under **Services**, define `home`, `pdf`, `qbit`, `torrent`,
+`jellyfin`, `portainer` and `cockpit`, each with endpoint `tcp:443`. Then run
+`./scripts/tailscale-services-up` and approve the pending host for each
+Service. HTTPS must be enabled under the tailnet DNS settings.
 
 Remove the old restricted nameserver for the `smallboi` split-DNS domain. It is
 no longer used. Leave MagicDNS enabled.

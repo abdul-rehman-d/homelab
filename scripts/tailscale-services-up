@@ -17,7 +17,10 @@ configure_service() {
 	local target="$2"
 
 	printf 'Configuring https://%s.arowana-cat.ts.net -> %s\n' "$name" "$target"
-	tailscale serve --yes --service="svc:${name}" --https=443 "$target"
+	if ! tailscale serve --yes --service="svc:${name}" --https=443 "$target"; then
+		printf 'Check that smallboi is tagged, svc:%s is defined with tcp:443, and this host is approved. See COMMANDS.md.\n' "$name" >&2
+		return 1
+	fi
 }
 
 configure_service home http://127.0.0.1:3000

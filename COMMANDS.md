@@ -35,9 +35,13 @@ Use this once when moving from the old three-project/Caddy/CoreDNS deployment:
 This removes and recreates this repository's named containers and deletes the
 obsolete `homelab-proxy` network. Bind-mounted data under `/srv` is preserved.
 
-Approve pending Tailscale Service hosts in the admin console afterward. Under
-the DNS page, enable HTTPS and MagicDNS, and remove the obsolete restricted
-nameserver for the `smallboi` domain.
+The container portion of the migration may complete before the Tailscale
+portion. If it stops with `service hosts must be tagged nodes`, do not repeat
+the migration: finish the Tailscale setup below and run
+`./scripts/tailscale-services-up`.
+
+Under the DNS page, enable HTTPS and MagicDNS, and remove the obsolete
+restricted nameserver for the `smallboi` domain.
 
 ## Start and stop
 
@@ -64,6 +68,16 @@ docker inspect --format '{{json .State.Health}}' qbittorrent | jq
 
 ## Tailscale Services
 
+Before the first run, use the Tailscale admin console:
+
+1. Under **Access controls → Tags**, define `tag:homelab`.
+2. Under **Machines**, select `smallboi` → **Edit tags** and assign
+   `tag:homelab`. Keep a LAN SSH session open: tagging changes the machine
+   from a user-owned identity to a tagged identity and may affect Tailscale
+   SSH access policies.
+3. Under **Services**, define `home`, `pdf`, `qbit`, `torrent`, `jellyfin`,
+   `portainer` and `cockpit`, each with endpoint `tcp:443`.
+
 Reapply every service declaration:
 
 ```bash
@@ -89,7 +103,7 @@ https://portainer.arowana-cat.ts.net
 https://cockpit.arowana-cat.ts.net
 ```
 
-If a service is pending, approve its host in the Tailscale admin console. Use
+Approve the pending host for each Service in the Tailscale admin console. Use
 tailnet grants to limit these services to the intended users and devices.
 
 ## UFW firewall
