@@ -1,58 +1,118 @@
-# Homelabbing stuff
+# smallboi homelab
 
-for now, just docker composes for my homelab (old laptop converting server)
+Docker Compose configuration for the Ubuntu Server homelab running on
+`smallboi`. Applications are private to the home LAN and the
+`arowana-cat.ts.net` tailnet.
 
-## Todos
-- [ ] figure out caddy
-- [ ] vpn instead of cloudfare tunnel?
-- [x] TUI app as a dashboard (sorta done @ [abdul-rehman-d/cockpit](https://github.com/abdul-rehman-d/cockpit))
+## Access
 
-## How it looks
-![IMG_0418(1)](https://github.com/user-attachments/assets/a037afcd-e9d8-464a-a73c-2c27526b6f80)
+Tailscale Services are the preferred way to open the applications. Tailscale
+provides private routing, DNS and browser-trusted HTTPS certificates.
 
+| Application | Tailnet URL | LAN fallback |
+| --- | --- | --- |
+| Homepage | `https://home.arowana-cat.ts.net` | `http://SERVER_LAN_IP:3000` |
+| Stirling PDF | `https://pdf.arowana-cat.ts.net` | `http://SERVER_LAN_IP:6000` |
+| qBittorrent | `https://qbit.arowana-cat.ts.net` | `http://SERVER_LAN_IP:4000` |
+| Torrent Lab | `https://torrent.arowana-cat.ts.net` | `http://SERVER_LAN_IP:5000` |
+| Jellyfin | `https://jellyfin.arowana-cat.ts.net` | `http://SERVER_LAN_IP:8096` |
+| Portainer | `https://portainer.arowana-cat.ts.net` | `http://SERVER_LAN_IP:9000` |
+| Cockpit | `https://cockpit.arowana-cat.ts.net` | `https://SERVER_LAN_IP:9090` |
 
-## Apps
+Replace `SERVER_LAN_IP` with the value configured in `.env`.
 
-### jellyfin
-<img width="800" height="450" alt="image" src="https://github.com/user-attachments/assets/eac0885e-275d-4dc5-8962-5076b41fd475" />
+The web applications are mounted at `/` on separate service names. This avoids
+the broken assets, redirects, cookies and WebSockets that some applications
+experience when hosted under URL paths such as `/qbit`.
 
-### qbittorent
-<img width="800" height="450" alt="image" src="https://github.com/user-attachments/assets/8fb930ce-05a2-49fe-9fcc-d203650bff8f" />
+## First deployment after this migration
 
-### portainer
-<img width="800" height="450" alt="image" src="https://github.com/user-attachments/assets/79057344-76e8-47e0-8826-8ee9b25617d6" />
+The repository previously started three independent Compose projects. Run the
+one-time migration so those containers are recreated under the root Compose
+project:
 
-### samba
-<img width="800" height="450" alt="image" src="https://github.com/user-attachments/assets/ac127eb1-320d-497b-8a5e-8c4369b0a872" />
+```bash
+cp .env.example .env
+# Edit .env and set smallboi's reserved LAN address.
 
-### cockpit
-<img width="800" height="450" alt="image" src="https://github.com/user-attachments/assets/92114f35-f5c7-4bf4-80e4-f9a42bbe4800" />
+./scripts/migrate-compose-project
+```
 
-### Stirling PDF
+The migration removes and recreates this repository's named containers and
+deletes the obsolete `homelab-proxy` network. It does not remove the bind
+mounted application data under `/srv`.
 
-Stirling PDF is available on port `6000`. Its persistent data lives under
-`/srv/stirling-pdf`. The initial login is `admin` / `stirling`; the app requires
-the password to be changed on first login.
+After the containers start, open the Tailscale admin console and approve the
+pending hosts for `home`, `pdf`, `qbit`, `torrent`, `jellyfin`, `portainer` and
+`cockpit`. HTTPS must be enabled under the tailnet DNS settings.
 
-## Private service names
+Remove the old restricted nameserver for the `smallboi` split-DNS domain. It is
+no longer used. Leave MagicDNS enabled.
 
-When connected to the tailnet, the services are also available without port
-numbers:
+## Normal operation
 
-- `http://smallboi` — dashboard
-- `http://cockpit.smallboi` — Cockpit
-- `http://portainer.smallboi` — Portainer
-- `http://jellyfin.smallboi` — Jellyfin
-- `http://qbit.smallboi` — qBittorrent
-- `http://torrentlab.smallboi` — Torrent Lab
-- `http://pdf.smallboi` — Stirling PDF
+Start or reconcile everything:
 
-CoreDNS answers the `*.smallboi` records on the server's Tailscale address,
-`100.119.155.32`. The tailnet must have a restricted nameserver for the
-`smallboi` domain pointing to that address. All original published ports remain
-available. The DNS wildcard means future one-level names only need a matching
-Caddy route; CoreDNS does not need another record.
+```bash
+./scripts/up
+```
 
-If qBittorrent rejects the proxied hostname, add `qbit.smallboi` under
-**Settings → Web UI → Server domains** while leaving its CSRF and clickjacking
-protections enabled.
+The root `compose.yaml` includes the infra, media and tools Compose files. The
+startup script brings up the containers, then idempotently reapplies the
+Tailscale Service declarations.
+
+See [COMMANDS.md](COMMANDS.md) for firewall setup, status checks, logs,
+upgrades and troubleshooting.
+
+## Layout
+
+```text
+compose.yaml                     Root Compose include file
+infra/compose.yaml               Homepage and Portainer
+media/docker-compose.yaml        Jellyfin, qBittorrent and Torrent Lab
+tools/compose.yaml               Stirling PDF
+homepage/                        Version-controlled Homepage configuration
+scripts/up                       Normal startup/reconciliation
+scripts/tailscale-services-up    Tailscale Service declarations
+scripts/migrate-compose-project  One-time migration from the old projects
+COMMANDS.md                      Server operations and firewall commands
+```
+
+## Exposure model
+
+Each container web port is bound twice:
+
+- `127.0.0.1` for the local Tailscale Serve proxy.
+- `SERVER_LAN_IP` for intentional direct access from the home LAN.
+
+Nothing listens on every host address except qBittorrent's TCP/UDP `6881` peer
+port. Do not forward any management or web ports on the router. If BitTorrent
+inbound connectivity is desired, forward only `6881`.
+
+Portainer retains access to `/var/run/docker.sock`, which is effectively root
+access to the server. Homepage deliberately uses static links and does not
+receive the Docker socket.
+
+## Persistent data
+
+Application data remains outside the repository:
+
+```text
+/srv/portainer/data
+/srv/jellyfin/config
+/srv/jellyfin/cache
+/srv/qbittorrent/config
+/srv/torrentlab/config
+/srv/stirling-pdf
+/srv/nutshell
+```
+
+Jellyfin, qBittorrent and Torrent Lab mount `/srv/nutshell/media` writable so
+media can be deleted from Jellyfin.
+
+## Image updates
+
+Public images use explicit application versions. Torrent Lab does not publish
+version tags, so its `latest` label is locked to an OCI digest. `renovate.json`
+groups container update proposals for deliberate review; updates are never
+automerged.

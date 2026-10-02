@@ -1,16 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 
 REPO_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_DIR"
 
-docker network inspect homelab-proxy >/dev/null 2>&1 || \
-	docker network create homelab-proxy
+if [[ ! -f .env ]]; then
+	printf 'Missing %s/.env. Copy .env.example to .env and set SERVER_LAN_IP.\n' "$REPO_DIR" >&2
+	exit 1
+fi
 
-docker compose -f infra/compose.yaml up -d
-docker compose -f media/docker-compose.yaml up -d
-# weird edge case
-sleep 1
-docker restart torrentlab
-docker compose -f tools/compose.yaml up -d
+if docker container inspect caddy >/dev/null 2>&1 || docker container inspect coredns >/dev/null 2>&1; then
+	printf 'Legacy Caddy/CoreDNS containers detected. Run ./scripts/migrate-compose-project once.\n' >&2
+	exit 1
+fi
+
+docker compose up -d --remove-orphans
+"$REPO_DIR/scripts/tailscale-services-up"

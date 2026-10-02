@@ -1,0 +1,6 @@
+name: homelab
+
+include:
+  - path: infra/compose.yaml
+  - path: media/docker-compose.yaml
+  - path: tools/compose.yaml

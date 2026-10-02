@@ -1,0 +1,19 @@
+title: smallboi
+description: Home services on smallboi
+theme: dark
+color: slate
+headerStyle: boxed
+statusStyle: dot
+target: _blank
+hideVersion: true
+showStats: true
+layout:
+  Media:
+    style: row
+    columns: 3
+  Tools:
+    style: row
+    columns: 2
+  Administration:
+    style: row
+    columns: 2

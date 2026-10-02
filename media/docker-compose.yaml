@@ -1,10 +1,11 @@
 services:
   jellyfin:
-    image: jellyfin/jellyfin:latest
+    image: jellyfin/jellyfin:12.1
     container_name: jellyfin
     restart: unless-stopped
     ports:
-      - "8096:8096"
+      - "127.0.0.1:8096:8096"
+      - "${SERVER_LAN_IP:?Set SERVER_LAN_IP in .env}:8096:8096"
     devices:
       - /dev/dri:/dev/dri
     volumes:
@@ -14,19 +15,26 @@ services:
       # - /srv/nutshell/media/movies:/media/movies
       - /srv/nutshell/media:/media
     networks:
-      - homelab-proxy
+      - media
+    mem_limit: 3g
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
 
   qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
+    image: lscr.io/linuxserver/qbittorrent:5.2.4
     container_name: qbittorrent
     restart: unless-stopped
     ports:
-      - "4000:4000"
+      - "127.0.0.1:4000:4000"
+      - "${SERVER_LAN_IP:?Set SERVER_LAN_IP in .env}:4000:4000"
       - "6881:6881"
       - "6881:6881/udp"
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
       - UMASK=002
       - TZ=Asia/Karachi
       - WEBUI_PORT=4000
@@ -35,14 +43,28 @@ services:
       - /srv/nutshell/torrents:/torrents
       - /srv/nutshell/media:/media
     networks:
-      - homelab-proxy
+      - media
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -fsS --max-time 5 http://127.0.0.1:4000/ >/dev/null
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    mem_limit: 1g
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
 
   torrentlab:
-    image: ghcr.io/abdul-rehman-d/torrent-lab:latest
+    image: ghcr.io/abdul-rehman-d/torrent-lab:latest@sha256:2bede94a2a7646cb5375a2f76443a9e804d8e7874fde19bad1302a47a26e41b8
     container_name: torrentlab
     environment:
-      PUID: 1000
-      PGID: 1000
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
       UMASK: "002"
       CONFIG_DIR: /config
       MOVIES_PATH: /media/movies
@@ -51,17 +73,26 @@ services:
       DOWNLOADS_PATH: /torrents/downloads
       PORT: 5000
     ports:
-      - "5000:5000"
+      - "127.0.0.1:5000:5000"
+      - "${SERVER_LAN_IP:?Set SERVER_LAN_IP in .env}:5000:5000"
     volumes:
       - /srv/torrentlab/config:/config
       - /srv/nutshell/torrents:/torrents
       - /srv/nutshell/media:/media
     depends_on:
-      - qbittorrent
+      qbittorrent:
+        condition: service_healthy
+        restart: true
     restart: unless-stopped
     networks:
-      - homelab-proxy
+      - media
+    mem_limit: 512m
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
 
 networks:
-  homelab-proxy:
-    external: true
+  media:
+    name: homelab-media

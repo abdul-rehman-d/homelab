@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "automerge": false,
+  "packageRules": [
+    {
+      "description": "Group homelab container image updates",
+      "matchManagers": ["docker-compose"],
+      "groupName": "homelab container images"
+    }
+  ]
+}

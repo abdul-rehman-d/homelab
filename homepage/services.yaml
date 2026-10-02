@@ -1,0 +1,29 @@
+- Media:
+    - Jellyfin:
+        icon: jellyfin.png
+        href: https://jellyfin.arowana-cat.ts.net
+        description: Movies and television
+    - qBittorrent:
+        icon: qbittorrent.png
+        href: https://qbit.arowana-cat.ts.net
+        description: Download client
+    - Torrent Lab:
+        icon: mdi-flask
+        href: https://torrent.arowana-cat.ts.net
+        description: Media download automation
+
+- Tools:
+    - Stirling PDF:
+        icon: stirling-pdf.png
+        href: https://pdf.arowana-cat.ts.net
+        description: Private PDF tools
+
+- Administration:
+    - Portainer:
+        icon: portainer.png
+        href: https://portainer.arowana-cat.ts.net
+        description: Container management
+    - Cockpit:
+        icon: cockpit.png
+        href: https://cockpit.arowana-cat.ts.net
+        description: Server administration

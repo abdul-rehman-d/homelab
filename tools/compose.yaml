@@ -4,7 +4,8 @@ services:
     container_name: stirling-pdf
     restart: unless-stopped
     ports:
-      - "6000:8080"
+      - "127.0.0.1:6000:8080"
+      - "${SERVER_LAN_IP:?Set SERVER_LAN_IP in .env}:6000:8080"
     environment:
       TZ: Asia/Karachi
       SECURITY_ENABLELOGIN: "true"
@@ -50,8 +51,8 @@ services:
         max-size: 10m
         max-file: "3"
     networks:
-      - homelab-proxy
+      - tools
 
 networks:
-  homelab-proxy:
-    external: true
+  tools:
+    name: homelab-tools

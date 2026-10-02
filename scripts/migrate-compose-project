@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+REPO_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_DIR"
+
+if [[ ! -f .env ]]; then
+	printf 'Missing %s/.env. Copy .env.example to .env and set SERVER_LAN_IP.\n' "$REPO_DIR" >&2
+	exit 1
+fi
+
+printf 'Stopping the legacy infra, media and tools Compose projects...\n'
+docker compose -p infra -f infra/compose.yaml down --remove-orphans
+docker compose -p media -f media/docker-compose.yaml down --remove-orphans
+docker compose -p tools -f tools/compose.yaml down --remove-orphans
+
+printf 'Removing any remaining containers from the legacy project layout...\n'
+for container in caddy coredns portainer jellyfin qbittorrent torrentlab stirling-pdf; do
+	if docker container inspect "$container" >/dev/null 2>&1; then
+		docker container rm --force "$container"
+	fi
+done
+
+if docker network inspect homelab-proxy >/dev/null 2>&1; then
+	if ! docker network rm homelab-proxy; then
+		printf 'Legacy network is still in use; continuing without removing it.\n' >&2
+	fi
+fi
+
+printf 'Starting the unified homelab Compose project...\n'
+docker compose up -d --remove-orphans
+"$REPO_DIR/scripts/tailscale-services-up"
