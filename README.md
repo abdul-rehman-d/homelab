@@ -43,10 +43,10 @@ deletes the obsolete `homelab-proxy` network. It does not remove the bind
 mounted application data under `/srv`.
 
 Before Tailscale Services can be advertised, define `tag:homelab` under
-**Access controls → Tags** and assign it to `smallboi` under **Machines → Edit
-tags**. A Service host must be tagged; tagging replaces the machine's
+**Access controls → Definitions → Tags** and assign it to `smallboi` under
+**Network → Machines → Edit tags**. A Service host must be tagged; tagging replaces the machine's
 user-based Tailscale identity. Keep a LAN SSH session available while making
-this change. Under **Services**, define `home`, `pdf`, `qbit`, `torrent`,
+this change. Under **Network → Services**, define `home`, `pdf`, `qbit`, `torrent`,
 `jellyfin`, `portainer` and `cockpit`, each with endpoint `tcp:443`. Then run
 `./scripts/tailscale-services-up` and approve the pending host for each
 Service. HTTPS must be enabled under the tailnet DNS settings.

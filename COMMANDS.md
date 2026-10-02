@@ -70,12 +70,12 @@ docker inspect --format '{{json .State.Health}}' qbittorrent | jq
 
 Before the first run, use the Tailscale admin console:
 
-1. Under **Access controls → Tags**, define `tag:homelab`.
-2. Under **Machines**, select `smallboi` → **Edit tags** and assign
+1. Under **Access controls → Definitions → Tags**, define `tag:homelab`.
+2. Under **Network → Machines**, select `smallboi` → **Edit tags** and assign
    `tag:homelab`. Keep a LAN SSH session open: tagging changes the machine
    from a user-owned identity to a tagged identity and may affect Tailscale
    SSH access policies.
-3. Under **Services**, define `home`, `pdf`, `qbit`, `torrent`, `jellyfin`,
+3. Under **Network → Services**, define `home`, `pdf`, `qbit`, `torrent`, `jellyfin`,
    `portainer` and `cockpit`, each with endpoint `tcp:443`.
 
 Reapply every service declaration:
