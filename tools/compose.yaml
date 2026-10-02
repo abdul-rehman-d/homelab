@@ -1,4 +1,37 @@
 services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:v0.11.4-slim
+    container_name: open-webui
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:7000:8080"
+      - "${SERVER_LAN_IP:?Set SERVER_LAN_IP in .env}:7000:8080"
+    environment:
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:?Set OLLAMA_BASE_URL in .env}
+      WEBUI_SECRET_KEY: ${OPEN_WEBUI_SECRET_KEY:?Set OPEN_WEBUI_SECRET_KEY in .env}
+      TZ: Asia/Karachi
+      DO_NOT_TRACK: "true"
+      ANONYMIZED_TELEMETRY: "false"
+    volumes:
+      - /srv/open-webui/data:/app/backend/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl --silent --fail http://localhost:8080/health | jq -e '.status == true' >/dev/null
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    mem_limit: 1g
+    cpus: "1.5"
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    networks:
+      - tools
+
   stirling-pdf:
     image: docker.stirlingpdf.com/stirlingtools/stirling-pdf:2.14.3
     container_name: stirling-pdf

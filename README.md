@@ -12,6 +12,7 @@ provides private routing, DNS and browser-trusted HTTPS certificates.
 | Application | Tailnet URL | LAN fallback |
 | --- | --- | --- |
 | Homepage | `https://home.arowana-cat.ts.net` | `http://SERVER_LAN_IP:3000` |
+| Open WebUI | `https://chat.arowana-cat.ts.net` | `http://SERVER_LAN_IP:7000` |
 | Stirling PDF | `https://pdf.arowana-cat.ts.net` | `http://SERVER_LAN_IP:6000` |
 | qBittorrent | `https://qbit.arowana-cat.ts.net` | `http://SERVER_LAN_IP:4000` |
 | Torrent Lab | `https://torrent.arowana-cat.ts.net` | `http://SERVER_LAN_IP:5000` |
@@ -46,8 +47,8 @@ Before Tailscale Services can be advertised, define `tag:homelab` under
 **Access controls → Definitions → Tags** and assign it to `smallboi` under
 **Network → Machines → Edit tags**. A Service host must be tagged; tagging replaces the machine's
 user-based Tailscale identity. Keep a LAN SSH session available while making
-this change. Under **Network → Services**, define `home`, `pdf`, `qbit`, `torrent`,
-`jellyfin`, `portainer` and `cockpit`, each with endpoint `tcp:443`. Then run
+this change. Under **Network → Services**, define `home`, `chat`, `pdf`, `qbit`,
+`torrent`, `jellyfin`, `portainer` and `cockpit`, each with endpoint `tcp:443`. Then run
 `./scripts/tailscale-services-up` and approve the pending host for each
 Service. HTTPS must be enabled under the tailnet DNS settings.
 
@@ -75,7 +76,7 @@ upgrades and troubleshooting.
 compose.yaml                     Root Compose include file
 infra/compose.yaml               Homepage and Portainer
 media/docker-compose.yaml        Jellyfin, qBittorrent and Torrent Lab
-tools/compose.yaml               Stirling PDF
+tools/compose.yaml               Open WebUI and Stirling PDF
 homepage/                        Version-controlled Homepage configuration
 scripts/up                       Normal startup/reconciliation
 scripts/tailscale-services-up    Tailscale Service declarations
@@ -109,6 +110,7 @@ Application data remains outside the repository:
 /srv/qbittorrent/config
 /srv/torrentlab/config
 /srv/stirling-pdf
+/srv/open-webui/data
 /srv/nutshell
 ```
 

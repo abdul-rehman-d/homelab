@@ -13,6 +13,10 @@
         description: Media download automation
 
 - Tools:
+    - Open WebUI:
+        icon: open-webui.png
+        href: https://chat.arowana-cat.ts.net
+        description: Local AI chat
     - Stirling PDF:
         icon: stirling-pdf.png
         href: https://pdf.arowana-cat.ts.net

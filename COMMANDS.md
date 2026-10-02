@@ -1,6 +1,7 @@
 # smallboi command reference
 
-Run these commands on the Ubuntu Server host, not on a development laptop.
+Run these commands on the Ubuntu Server host unless a section explicitly says
+to use the Mac that runs Ollama.
 
 ## Discover network values
 
@@ -63,7 +64,50 @@ docker compose logs --tail=100 homepage
 docker compose logs --tail=100 qbittorrent
 docker compose logs --tail=100 torrentlab
 docker compose logs --tail=100 stirling-pdf
+docker compose logs --tail=100 open-webui
 docker inspect --format '{{json .State.Health}}' qbittorrent | jq
+docker inspect --format '{{json .State.Health}}' open-webui | jq
+```
+
+## Ollama backend on the Mac
+
+Ollama stays bound to `127.0.0.1:11434` on the Mac. Tailscale Serve makes it
+available privately to `smallboi` without exposing the unauthenticated Ollama
+API on the LAN.
+
+Run this on `madmans-macbook`, not on `smallboi`:
+
+```bash
+tailscale serve --bg --yes 11434
+tailscale serve status
+```
+
+The tailnet policy must allow the tagged homelab server to reach the Mac's
+Tailscale address on HTTPS. Add a grant equivalent to this under **Access
+controls**, merging it into the existing `grants` array:
+
+```json
+{
+  "src": ["tag:homelab"],
+  "dst": ["100.102.188.29"],
+  "ip": ["tcp:443"]
+}
+```
+
+The Tailscale IP is stable while the Mac remains enrolled. If the Mac is
+removed and re-added to the tailnet, update both the grant and this document.
+
+Verify from `smallboi` before starting Open WebUI:
+
+```bash
+curl -fsS https://madmans-macbook.arowana-cat.ts.net/api/tags | jq -r '.models[].name'
+```
+
+The Mac must remain awake with both Ollama and Tailscale running. To remove the
+private proxy later, run this on the Mac:
+
+```bash
+tailscale serve --https=443 off
 ```
 
 ## Tailscale Services
@@ -75,8 +119,8 @@ Before the first run, use the Tailscale admin console:
    `tag:homelab`. Keep a LAN SSH session open: tagging changes the machine
    from a user-owned identity to a tagged identity and may affect Tailscale
    SSH access policies.
-3. Under **Network → Services**, define `home`, `pdf`, `qbit`, `torrent`, `jellyfin`,
-   `portainer` and `cockpit`, each with endpoint `tcp:443`.
+3. Under **Network → Services**, define `home`, `chat`, `pdf`, `qbit`, `torrent`,
+   `jellyfin`, `portainer` and `cockpit`, each with endpoint `tcp:443`.
 
 Reapply every service declaration:
 
@@ -95,6 +139,7 @@ Expected HTTPS endpoints:
 
 ```text
 https://home.arowana-cat.ts.net
+https://chat.arowana-cat.ts.net
 https://pdf.arowana-cat.ts.net
 https://qbit.arowana-cat.ts.net
 https://torrent.arowana-cat.ts.net
@@ -105,6 +150,10 @@ https://cockpit.arowana-cat.ts.net
 
 Approve the pending host for each Service in the Tailscale admin console. Use
 tailnet grants to limit these services to the intended users and devices.
+
+On first launch, create the Open WebUI administrator account, then disable new
+account registration from the admin settings unless other tailnet users need
+their own accounts.
 
 ## UFW firewall
 
@@ -142,6 +191,7 @@ sudo ufw allow in on "$LAN_INTERFACE" from "$LAN_CIDR" to any port 3000 proto tc
 sudo ufw allow in on "$LAN_INTERFACE" from "$LAN_CIDR" to any port 4000 proto tcp comment 'qBit from LAN'
 sudo ufw allow in on "$LAN_INTERFACE" from "$LAN_CIDR" to any port 5000 proto tcp comment 'Torrent Lab from LAN'
 sudo ufw allow in on "$LAN_INTERFACE" from "$LAN_CIDR" to any port 6000 proto tcp comment 'Stirling PDF from LAN'
+sudo ufw allow in on "$LAN_INTERFACE" from "$LAN_CIDR" to any port 7000 proto tcp comment 'Open WebUI from LAN'
 sudo ufw allow in on "$LAN_INTERFACE" from "$LAN_CIDR" to any port 8096 proto tcp comment 'Jellyfin from LAN'
 sudo ufw allow in on "$LAN_INTERFACE" from "$LAN_CIDR" to any port 9000 proto tcp comment 'Portainer from LAN'
 sudo ufw allow in on "$LAN_INTERFACE" from "$LAN_CIDR" to any port 9090 proto tcp comment 'Cockpit from LAN'
@@ -207,6 +257,7 @@ curl -kI https://127.0.0.1:9090
 sudo ss -lntup
 curl -fsSI http://127.0.0.1:3000
 curl -fsSI http://127.0.0.1:6000
+curl -fsSI http://127.0.0.1:7000
 curl -kfsSI https://127.0.0.1:9090
 ```
 

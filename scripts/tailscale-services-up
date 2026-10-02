@@ -24,6 +24,7 @@ configure_service() {
 }
 
 configure_service home http://127.0.0.1:3000
+configure_service chat http://127.0.0.1:7000
 configure_service pdf http://127.0.0.1:6000
 configure_service qbit http://127.0.0.1:4000
 configure_service torrent http://127.0.0.1:5000
