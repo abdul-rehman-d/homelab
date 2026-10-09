@@ -11,9 +11,8 @@ services:
     volumes:
       - /srv/jellyfin/config:/config
       - /srv/jellyfin/cache:/cache
-      # - /srv/nutshell/media/tv:/media/tv
-      # - /srv/nutshell/media/movies:/media/movies
       - /srv/nutshell/media:/media
+      - /srv/nutshell/jf-transcoding:/transcoding
     networks:
       - media
     mem_limit: 3g
