@@ -120,7 +120,7 @@ Before the first run, use the Tailscale admin console:
    from a user-owned identity to a tagged identity and may affect Tailscale
    SSH access policies.
 3. Under **Network → Services**, define `home`, `chat`, `pdf`, `qbit`, `torrent`,
-   `jellyfin`, `portainer` and `cockpit`, each with endpoint `tcp:443`.
+   `jellyfin`, `portainer`, `cockpit` and `recover`, each with endpoint `tcp:443`.
 
 Reapply every service declaration:
 
@@ -146,10 +146,31 @@ https://torrent.arowana-cat.ts.net
 https://jellyfin.arowana-cat.ts.net
 https://portainer.arowana-cat.ts.net
 https://cockpit.arowana-cat.ts.net
+https://recover.arowana-cat.ts.net
 ```
 
 Approve the pending host for each Service in the Tailscale admin console. Use
 tailnet grants to limit these services to the intended users and devices.
+
+To enable the External SSD Recovery card, install its fixed host action once
+from the repository on `smallboi`:
+
+```bash
+sudo ./scripts/install-ssd-recovery
+sudo systemctl status homelab-ssd-recovery.service
+```
+
+The endpoint listens only on loopback port `3101`; Tailscale Serve provides the
+HTTPS page. The page requires a confirmation click and accepts only its own
+origin. It runs `mount -a` and, only if that succeeds, restarts this repository's
+Compose project. To remove it, run:
+
+```bash
+sudo systemctl disable --now homelab-ssd-recovery.service
+sudo rm /etc/systemd/system/homelab-ssd-recovery.service
+sudo rm /usr/local/libexec/homelab-ssd-recovery-server.py
+sudo systemctl daemon-reload
+```
 
 On first launch, create the Open WebUI administrator account, then disable new
 account registration from the admin settings unless other tailnet users need

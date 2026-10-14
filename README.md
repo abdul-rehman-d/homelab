@@ -99,6 +99,16 @@ Portainer retains access to `/var/run/docker.sock`, which is effectively root
 access to the server. Homepage deliberately uses static links and does not
 receive the Docker socket.
 
+The External SSD Recovery card runs a fixed host-side action. Install its
+loopback-only control service once on `smallboi` with
+`sudo ./scripts/install-ssd-recovery`, then add `recover` under **Network →
+Services** in the Tailscale admin console with endpoint `tcp:443` and rerun
+`./scripts/tailscale-services-up`. The button is available through
+`https://recover.arowana-cat.ts.net`; it asks for confirmation before running
+`mount -a` followed by `docker compose -f <this repository>/compose.yaml restart`.
+The host service exposes no command input and accepts the action only from the
+recovery page's origin.
+
 ## Persistent data
 
 Application data remains outside the repository:
