@@ -33,7 +33,7 @@ PAGE = """<!doctype html>
 </head>
 <body>
   <main>
-    <p>Reconnect the external SSD first. This runs <code>mount -a</code>, then restarts the homelab Compose project.</p>
+    <p>Reconnect the external SSD first. This runs <code>mount -a</code>, then restarts Jellyfin, qBittorrent, and Torrent Lab.</p>
     <button id="recover" type="button">Recover external drive</button>
     <output id="result" aria-live="polite"></output>
   </main>
@@ -41,7 +41,7 @@ PAGE = """<!doctype html>
     const button = document.querySelector("#recover");
     const result = document.querySelector("#result");
     button.addEventListener("click", async () => {
-      if (!window.confirm("Run mount -a and restart the homelab Compose project now?")) return;
+      if (!window.confirm("Run mount -a and restart Jellyfin, qBittorrent, and Torrent Lab now?")) return;
       button.disabled = true;
       result.textContent = "Running recovery…";
       try {
@@ -120,7 +120,10 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_json(500, {"message": f"mount -a failed (exit {mount.returncode}).", "output": output[-8000:]})
                 return
 
-            compose = run_command(["/usr/bin/docker", "compose", "-f", str(COMPOSE_FILE), "restart"])
+            compose = run_command([
+                "/usr/bin/docker", "compose", "-f", str(COMPOSE_FILE), "restart",
+                "jellyfin", "qbittorrent", "torrentlab",
+            ])
             output += compose.stdout
             payload = {
                 "message": "Recovery completed." if compose.returncode == 0 else f"Compose restart failed (exit {compose.returncode}).",

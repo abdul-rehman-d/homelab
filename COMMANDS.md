@@ -161,9 +161,9 @@ sudo systemctl status homelab-ssd-recovery.service
 ```
 
 The endpoint listens only on loopback port `3101`; Tailscale Serve provides the
-HTTPS page. The page requires a confirmation click and accepts only its own
-origin. It runs `mount -a` and, only if that succeeds, restarts this repository's
-Compose project. To remove it, run:
+HTTPS page. The page requires a confirmation click. It runs `mount -a` and,
+only if that succeeds, restarts Jellyfin, qBittorrent and Torrent Lab, which
+mount `/srv/nutshell`. To remove it, run:
 
 ```bash
 sudo systemctl disable --now homelab-ssd-recovery.service

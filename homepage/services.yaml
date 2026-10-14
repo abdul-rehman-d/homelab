@@ -34,7 +34,7 @@
     - External SSD Recovery:
         icon: mdi-harddisk
         href: https://recover.arowana-cat.ts.net
-        description: Remount storage and restart homelab services
+        description: Remount storage and restart media services using nutshell
         widget:
             type: iframe
             name: SSD Recovery

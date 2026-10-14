@@ -105,9 +105,8 @@ loopback-only control service once on `smallboi` with
 Services** in the Tailscale admin console with endpoint `tcp:443` and rerun
 `./scripts/tailscale-services-up`. The button is available through
 `https://recover.arowana-cat.ts.net`; it asks for confirmation before running
-`mount -a` followed by `docker compose -f <this repository>/compose.yaml restart`.
-The host service exposes no command input and accepts the action only from the
-recovery page's origin.
+`mount -a`, then restarts only Jellyfin, qBittorrent and Torrent Lab, the
+services that mount `/srv/nutshell`.
 
 ## Persistent data
 
