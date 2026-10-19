@@ -3,6 +3,10 @@
         icon: jellyfin.png
         href: https://jellyfin.arowana-cat.ts.net
         description: Movies and television
+    - Kavita:
+        icon: mdi-book-open-page-variant
+        href: https://books.arowana-cat.ts.net
+        description: Books, comics, and manga
     - qBittorrent:
         icon: qbittorrent.png
         href: https://qbit.arowana-cat.ts.net

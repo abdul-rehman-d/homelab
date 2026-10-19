@@ -120,7 +120,7 @@ Before the first run, use the Tailscale admin console:
    from a user-owned identity to a tagged identity and may affect Tailscale
    SSH access policies.
 3. Under **Network → Services**, define `home`, `chat`, `pdf`, `qbit`, `torrent`,
-   `jellyfin`, `portainer`, `cockpit` and `recover`, each with endpoint `tcp:443`.
+   `jellyfin`, `books`, `portainer`, `cockpit` and `recover`, each with endpoint `tcp:443`.
 
 Reapply every service declaration:
 

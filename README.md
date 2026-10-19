@@ -17,6 +17,7 @@ provides private routing, DNS and browser-trusted HTTPS certificates.
 | qBittorrent | `https://qbit.arowana-cat.ts.net` | `http://SERVER_LAN_IP:4000` |
 | Torrent Lab | `https://torrent.arowana-cat.ts.net` | `http://SERVER_LAN_IP:5000` |
 | Jellyfin | `https://jellyfin.arowana-cat.ts.net` | `http://SERVER_LAN_IP:8096` |
+| Kavita | `https://books.arowana-cat.ts.net` | `http://SERVER_LAN_IP:5001` |
 | Portainer | `https://portainer.arowana-cat.ts.net` | `http://SERVER_LAN_IP:9000` |
 | Cockpit | `https://cockpit.arowana-cat.ts.net` | `https://SERVER_LAN_IP:9090` |
 
@@ -48,7 +49,7 @@ Before Tailscale Services can be advertised, define `tag:homelab` under
 **Network → Machines → Edit tags**. A Service host must be tagged; tagging replaces the machine's
 user-based Tailscale identity. Keep a LAN SSH session available while making
 this change. Under **Network → Services**, define `home`, `chat`, `pdf`, `qbit`,
-`torrent`, `jellyfin`, `portainer` and `cockpit`, each with endpoint `tcp:443`. Then run
+`torrent`, `jellyfin`, `books`, `portainer` and `cockpit`, each with endpoint `tcp:443`. Then run
 `./scripts/tailscale-services-up` and approve the pending host for each
 Service. HTTPS must be enabled under the tailnet DNS settings.
 
@@ -116,6 +117,7 @@ Application data remains outside the repository:
 /srv/portainer/data
 /srv/jellyfin/config
 /srv/jellyfin/cache
+/srv/kavita/config
 /srv/qbittorrent/config
 /srv/torrentlab/config
 /srv/stirling-pdf
@@ -124,7 +126,8 @@ Application data remains outside the repository:
 ```
 
 Jellyfin, qBittorrent and Torrent Lab mount `/srv/nutshell/media` writable so
-media can be deleted from Jellyfin.
+media can be deleted from Jellyfin. Kavita mounts only the books and comics
+folders read-only; configure its libraries to scan `/books` and `/comics`.
 
 ## Image updates
 
