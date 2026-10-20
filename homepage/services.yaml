@@ -43,5 +43,5 @@
             type: iframe
             name: SSD Recovery
             src: https://recover.arowana-cat.ts.net
-            classes: h-20 sm:h-20 md:h-20 lg:h-20 xl:h-20 2xl:h-20
+            classes: h-17 sm:h-17 md:h-17 lg:h-17 xl:h-17 2xl:h-17
             allowScrolling: no
