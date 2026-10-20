@@ -79,7 +79,7 @@ services:
         max-file: "3"
 
   torrentlab:
-    image: ghcr.io/abdul-rehman-d/torrent-lab:latest@sha256:4c4cdd93a018e7b6a033e89316161a73cfd2161a9c249e47b773dfb2ddcf3641
+    image: ghcr.io/abdul-rehman-d/torrent-lab:latest@sha256:a99d2b4dbdb5341586ade26b06e6a99365c0732ff61fa120e44ea54b305219aa
     container_name: torrentlab
     environment:
       PUID: ${PUID:-1000}
