@@ -21,37 +21,42 @@ PAGE = """<!doctype html>
   <title>External drive recovery</title>
   <style>
     :root { color-scheme: dark; font: 16px system-ui, sans-serif; }
-    body { margin: 0; padding: 18px; color: #e5e7eb; background: #1f2937; }
-    main { display: grid; gap: 12px; }
-    p { margin: 0; color: #cbd5e1; font-size: 14px; }
-    button { border: 0; border-radius: 8px; padding: 12px 16px; color: #fff;
-      background: #2563eb; font: inherit; font-weight: 650; cursor: pointer; }
-    button:hover { background: #1d4ed8; }
+    body { margin: 0; padding: 12px 18px; color: #e5e7eb; background: #1E293B; }
+    main { display: grid; }
+    button { display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      border: 0; border-radius: 8px; padding: 12px 16px; color: #fff;
+      background: #2A3445; font: inherit; font-weight: 650; cursor: pointer; }
+    button:hover { background: #354154; }
     button:disabled { opacity: .6; cursor: wait; }
-    output { white-space: pre-wrap; overflow-wrap: anywhere; font: 12px ui-monospace, monospace; }
+    .spinner { width: 16px; height: 16px; border: 2px solid currentColor;
+      border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; }
+    .spinner[hidden] { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 1.5s; } }
   </style>
 </head>
 <body>
   <main>
-    <p>Reconnect the external SSD first. This runs <code>mount -a</code>, then restarts Jellyfin, qBittorrent, and Torrent Lab.</p>
-    <button id="recover" type="button">Recover external drive</button>
-    <output id="result" aria-live="polite"></output>
+    <button id="recover" type="button">
+      <span>Recover external drive</span>
+      <span id="spinner" class="spinner" aria-hidden="true" hidden></span>
+    </button>
   </main>
   <script>
     const button = document.querySelector("#recover");
-    const result = document.querySelector("#result");
+    const spinner = document.querySelector("#spinner");
     button.addEventListener("click", async () => {
-      if (!window.confirm("Run mount -a and restart Jellyfin, qBittorrent, and Torrent Lab now?")) return;
       button.disabled = true;
-      result.textContent = "Running recovery…";
+      button.setAttribute("aria-busy", "true");
+      spinner.hidden = false;
       try {
         const response = await fetch("/recover", { method: "POST" });
-        const payload = await response.json();
-        result.textContent = payload.output || payload.message;
-        if (!response.ok) result.textContent = `Failed: ${result.textContent}`;
+        if (!response.ok) throw new Error("Recovery failed");
       } catch (error) {
-        result.textContent = `Request failed: ${error}`;
+        // Keep the compact button-only interface; return to its ready state on failure.
       } finally {
+        spinner.hidden = true;
+        button.removeAttribute("aria-busy");
         button.disabled = false;
       }
     });
