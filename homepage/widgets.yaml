@@ -1,6 +1,12 @@
 - resources:
+    label: System
+    expanded: true
     cpu: true
     memory: true
+
+- resources:
+    label: Storage
+    expanded: true
     disk:
       - /
       - /srv/nutshell
