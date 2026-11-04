@@ -12,7 +12,6 @@ services:
       - /srv/jellyfin/config:/config
       - /srv/jellyfin/cache:/cache
       - /srv/nutshell/media:/media
-      - /srv/nutshell/jf-transcoding:/transcoding
     networks:
       - media
     mem_limit: 3g
